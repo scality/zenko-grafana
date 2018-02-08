@@ -1,0 +1,15 @@
+version: 2
+jobs:
+  lint:
+    docker:
+      - image: docker.io/linkyard/docker-helm:2.7.2
+    steps:
+      - checkout
+      - run: helm lint --strict grafana/
+
+workflows:
+  version: 2
+
+  test:
+    jobs:
+      - lint
