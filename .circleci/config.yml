@@ -7,9 +7,23 @@ jobs:
       - checkout
       - run: helm lint --strict grafana/
 
+  build:
+    docker:
+      - image: docker.io/docker:17.12.0-ce
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run: docker build -t scality/zenko-grafana:this-build .
+      - run: docker save -o /tmp/zenko-grafana.tar scality/zenko-grafana:this-build
+      - persist_to_workspace:
+          root: /tmp
+          paths:
+            - zenko-grafana.tar
+
 workflows:
   version: 2
 
-  test:
+  build-test:
     jobs:
       - lint
+      - build
